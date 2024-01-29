@@ -1,0 +1,9 @@
+settings:
+  embeddings-store:
+    db-id:
+    db-token:
+    db-region:
+    keyspace:
+
+  openai:
+    api-key:
