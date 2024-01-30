@@ -1,4 +1,4 @@
-package org.kgromov.service;
+package org.kgromov.assistant;
 
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;

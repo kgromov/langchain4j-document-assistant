@@ -1,9 +1,7 @@
-package org.kgromov.service;
+package org.kgromov.assistant;
 
 import dev.langchain4j.data.document.Document;
 import org.springframework.core.io.Resource;
-
-import java.io.File;
 
 public interface DocumentLoader {
     Document loadDocument(Resource resource);

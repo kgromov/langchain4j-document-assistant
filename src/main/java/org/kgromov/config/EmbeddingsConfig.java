@@ -34,7 +34,7 @@ public class EmbeddingsConfig {
                 .databaseId(embeddingsStore.dbId())
                 .databaseRegion(embeddingsStore.dbRegion())
                 .keyspace(embeddingsStore.keyspace())
-                .table("document-assistant")
+                .table("document_assistant")
                 .dimension(384)
                 .build();
     }

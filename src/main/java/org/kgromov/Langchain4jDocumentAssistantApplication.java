@@ -3,6 +3,7 @@ package org.kgromov;
 import dev.langchain4j.chain.ConversationalRetrievalChain;
 import org.kgromov.config.EmbeddingStoreSettings;
 import org.kgromov.config.OpenAISetting;
+import org.kgromov.config.StorageSettings;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +14,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.Scanner;
 
 @SpringBootApplication
-@EnableConfigurationProperties({EmbeddingStoreSettings.class, OpenAISetting.class})
+@EnableConfigurationProperties({EmbeddingStoreSettings.class, OpenAISetting.class, StorageSettings.class})
 public class Langchain4jDocumentAssistantApplication {
 
 	public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package org.kgromov.service;
+package org.kgromov.assistant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,9 @@ import java.util.stream.Stream;
 @Getter
 public enum DocumentFormat {
     PDF(Set.of("pdf")),
-    TXT(Set.of("txt, text"));
+    TXT(Set.of("txt, text")),
+    EXCEL(Set.of("xls, xlsx")),
+    ;
 
     private final Set<String> extensions;
 

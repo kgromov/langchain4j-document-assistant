@@ -7,3 +7,18 @@ settings:
 
   openai:
     api-key:
+
+  storage:
+    upload-folder: output
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
+      enabled: true
+logging:
+  level:
+    org:
+      springframework:
+        web: debug

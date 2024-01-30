@@ -1,4 +1,4 @@
-package org.kgromov.service;
+package org.kgromov.assistant;
 
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import lombok.RequiredArgsConstructor;
