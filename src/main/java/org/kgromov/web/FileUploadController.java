@@ -16,7 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.stream.Collectors;
 
+// TODO: rewrite to vaadin file upload - https://vaadin.com/docs/v14/ds/components/upload
 @Controller
+@RequestMapping("/documents")
 @RequiredArgsConstructor
 public class FileUploadController {
     private final StorageService storageService;

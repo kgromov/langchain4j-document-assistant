@@ -15,6 +15,7 @@ import dev.langchain4j.store.embedding.cassandra.AstraDbEmbeddingConfiguration;
 import dev.langchain4j.store.embedding.cassandra.AstraDbEmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -43,20 +44,24 @@ public class EmbeddingsConfig {
                 .build();
     }
 
+    @Profile("!test")
+    @Qualifier("embeddingStore")
     @Bean
-    public EmbeddingStore<TextSegment> embeddingStore(AstraDbEmbeddingConfiguration embeddingConfiguration) {
+    public EmbeddingStore<TextSegment> astraDbEmbeddingStore(AstraDbEmbeddingConfiguration embeddingConfiguration) {
         return new AstraDbEmbeddingStore(embeddingConfiguration);
     }
 
 
     @Profile("test")
+    @Qualifier("embeddingStore")
     @Bean
-    public EmbeddingStore<TextSegment> embeddingStore() {
+    public EmbeddingStore<TextSegment> inMemoryEmbeddingStore() {
         return new InMemoryEmbeddingStore<>();
     }
 
     @Bean
-    public EmbeddingStoreIngestor embeddingStoreIngestor(EmbeddingStore<TextSegment> embeddingStore, EmbeddingModel embeddingModel) {
+    public EmbeddingStoreIngestor embeddingStoreIngestor(EmbeddingStore<TextSegment> embeddingStore,
+                                                         EmbeddingModel embeddingModel) {
         return EmbeddingStoreIngestor.builder()
                 .documentSplitter(DocumentSplitters.recursive(300, 0))
                 .embeddingModel(embeddingModel)
@@ -70,7 +75,7 @@ public class EmbeddingsConfig {
         return ConversationalRetrievalChain.builder()
                 .chatLanguageModel(OpenAiChatModel.withApiKey(openai.apiKey()))
 //                .chatMemory( TokenWindowChatMemory.withMaxTokens(300, new OpenAiTokenizer(GPT_3_5_TURBO)))
-                .chatMemory( MessageWindowChatMemory.withMaxMessages(20))
+                .chatMemory( MessageWindowChatMemory.withMaxMessages(100))
                 .retriever(EmbeddingStoreRetriever.from(embeddingStore, embeddingModel))
                 .build();
     }
