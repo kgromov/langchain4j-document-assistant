@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @Service
@@ -18,14 +18,16 @@ public class EmbeddingsService {
     private final List<DocumentLoader> documentLoaders;
 
     @SneakyThrows
-    public void processDocument(Resource resource) {
-        var extension = FileNameUtils.getExtension(resource.getFile().getPath());
-        var documentFormat = DocumentFormat.from(extension)
+    public void processDocument(Path filePath) {
+        log.info("Start uploading to embeddings store...");
+        var extension = FileNameUtils.getExtension(filePath);
+        var documentFormat = DocumentType.from(extension)
                 .orElseThrow(() -> new IllegalArgumentException("Unsupported extension = " + extension));
         var documentLoader = documentLoaders.stream()
                 .filter(loader -> loader.accept(documentFormat))
                 .findFirst()
                 .orElseThrow(() -> new UnsupportedOperationException("Document format is not supported yet"));
-        ingestor.ingest(documentLoader.loadDocument(resource));
+        ingestor.ingest(documentLoader.loadDocument(filePath));
+        log.info("Finished uploading to embeddings store");
     }
 }

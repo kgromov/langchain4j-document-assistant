@@ -27,6 +27,7 @@ class ChatView extends VerticalLayout {
     private final ConversationalRetrievalChain conversationalRetrievalChain;
     private final MessageList chat = new MessageList();
     private final MessageInput input = new MessageInput();
+    private final FilesUploader filesUploader;
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
@@ -42,7 +43,7 @@ class ChatView extends VerticalLayout {
 
     private void configureLayout() {
         setSizeFull();
-        add(chat, input);
+        add(chat, input, filesUploader);
         expand(chat);
         input.setWidthFull();
     }

@@ -127,6 +127,9 @@
 
 	<profiles>
 		<profile>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<id>production</id>
 			<build>
 				<plugins>
@@ -142,9 +145,6 @@
 									<goal>prepare-frontend</goal>
 									<goal>build-frontend</goal>
 								</goals>
-								<configuration>
-									<productionMode>true</productionMode>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>

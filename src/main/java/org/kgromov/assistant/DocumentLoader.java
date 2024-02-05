@@ -3,8 +3,11 @@ package org.kgromov.assistant;
 import dev.langchain4j.data.document.Document;
 import org.springframework.core.io.Resource;
 
-public interface DocumentLoader {
-    Document loadDocument(Resource resource);
+import java.nio.file.Path;
 
-    boolean accept(DocumentFormat format);
+public interface DocumentLoader {
+
+    Document loadDocument(Path path);
+
+    boolean accept(DocumentType type);
 }
