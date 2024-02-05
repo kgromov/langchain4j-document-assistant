@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Getter
-public enum DocumentFormat {
+public enum DocumentType {
     PDF(Set.of("pdf")),
     TXT(Set.of("txt, text")),
     EXCEL(Set.of("xls, xlsx")),
@@ -17,7 +17,7 @@ public enum DocumentFormat {
 
     private final Set<String> extensions;
 
-    public static Optional<DocumentFormat> from(String extension) {
+    public static Optional<DocumentType> from(String extension) {
         return Stream.of(values())
                 .filter(format -> format.getExtensions().contains(extension.toLowerCase()))
                 .findFirst();

@@ -1,10 +1,12 @@
 package org.kgromov.frontend;
 
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import dev.langchain4j.chain.ConversationalRetrievalChain;
@@ -27,6 +29,7 @@ class ChatView extends VerticalLayout {
     private final ConversationalRetrievalChain conversationalRetrievalChain;
     private final MessageList chat = new MessageList();
     private final MessageInput input = new MessageInput();
+    private final FilesUploader filesUploader;
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
@@ -42,7 +45,10 @@ class ChatView extends VerticalLayout {
 
     private void configureLayout() {
         setSizeFull();
-        add(chat, input);
+        H4 title = new H4("Ask me anything or drop file for something specific");
+        title.getStyle().setTextAlign(Style.TextAlign.CENTER);
+        title.setWidthFull();
+        add(title, chat, input, filesUploader);
         expand(chat);
         input.setWidthFull();
     }
