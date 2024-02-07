@@ -6,6 +6,7 @@ import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -30,6 +31,7 @@ class ChatView extends VerticalLayout {
     private final MessageList chat = new MessageList();
     private final MessageInput input = new MessageInput();
     private final FilesUploader filesUploader;
+    private final ProgressBar spinner = new ProgressBar();
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
@@ -38,8 +40,15 @@ class ChatView extends VerticalLayout {
         input.addSubmitListener(event -> {
             this.processMessage(USER, event.getValue());
 
-            CompletableFuture.supplyAsync(() -> conversationalRetrievalChain.execute(event.getValue()))
-                    .whenComplete((answer, ex) -> this.processMessage(ASSISTANT, answer));
+            CompletableFuture.supplyAsync(() -> {
+                        this.startProgress();
+                        log.debug("Call OpenAI");
+                        return conversationalRetrievalChain.execute(event.getValue());
+                    })
+                    .whenComplete((answer, ex) -> {
+                        this.stopProgress();
+                        this.processMessage(ASSISTANT, answer);
+                    });
         });
     }
 
@@ -48,9 +57,32 @@ class ChatView extends VerticalLayout {
         H4 title = new H4("Ask me anything or drop file for something specific");
         title.getStyle().setTextAlign(Style.TextAlign.CENTER);
         title.setWidthFull();
-        add(title, chat, input, filesUploader);
+        configureSpinner();
+        add(title, chat, spinner, input, filesUploader);
         expand(chat);
         input.setWidthFull();
+    }
+
+    private void configureSpinner() {
+        spinner.setIndeterminate(true);
+        spinner.setVisible(false);
+        spinner.getStyle().setAlignSelf(Style.AlignSelf.CENTER);
+    }
+
+    private void startProgress() {
+        log.debug("Start progress");
+        getUI().ifPresent(ui -> ui.access(() -> {
+            ui.setPollInterval(500);
+            spinner.setVisible(true);
+        }));
+    }
+
+    private void stopProgress() {
+        log.debug("Stop progress");
+        getUI().ifPresent(ui -> ui.access(() -> {
+            ui.setPollInterval(-1);
+            spinner.setVisible(false);
+        }));
     }
 
     private void processMessage(ChatParticipant participant, String message) {
