@@ -4,7 +4,6 @@ import dev.langchain4j.chain.ConversationalRetrievalChain;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
-import dev.langchain4j.memory.chat.TokenWindowChatMemory;
 import dev.langchain4j.model.embedding.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
@@ -23,8 +22,6 @@ import org.springframework.context.annotation.Profile;
 
 import java.time.Duration;
 
-import static dev.langchain4j.model.openai.OpenAiModelName.GPT_3_5_TURBO;
-
 @Configuration
 @RequiredArgsConstructor
 public class EmbeddingsConfig {
@@ -36,6 +33,7 @@ public class EmbeddingsConfig {
         return new AllMiniLmL6V2EmbeddingModel();
     }
 
+    @Profile("!test")
     @Bean
     public AstraDbEmbeddingConfiguration embeddingConfiguration() {
         return AstraDbEmbeddingConfiguration
@@ -70,7 +68,7 @@ public class EmbeddingsConfig {
                 .documentSplitter(DocumentSplitters.recursive(
                         300,
                         0,
-                        new OpenAiTokenizer(GPT_3_5_TURBO))
+                        new OpenAiTokenizer(openai.modelName()))
                 )
                 .embeddingModel(embeddingModel)
                 .embeddingStore(embeddingStore)
@@ -84,11 +82,13 @@ public class EmbeddingsConfig {
                 .chatLanguageModel(
                         OpenAiChatModel.builder()
                                 .apiKey(openai.apiKey())
+                                .baseUrl(openai.baseUrl())
+                                .modelName(openai.modelName())
                                 .timeout(Duration.ofSeconds(60))
                                 .build()
                 )
 //                .chatMemory(TokenWindowChatMemory.withMaxTokens(300, new OpenAiTokenizer(GPT_3_5_TURBO)))
-                .chatMemory( MessageWindowChatMemory.withMaxMessages(100))
+                .chatMemory(MessageWindowChatMemory.withMaxMessages(100))
                 .retriever(EmbeddingStoreRetriever.from(embeddingStore, embeddingModel, 3, 0.7))
                 .build();
     }

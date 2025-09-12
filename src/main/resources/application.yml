@@ -7,6 +7,8 @@ settings:
 
   openai:
     api-key:
+    base-url: "https://models.inference.ai.azure.com"
+    model-name: gpt-4o
 
   storage:
     upload-folder: output
